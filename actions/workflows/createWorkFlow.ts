@@ -7,7 +7,6 @@ import {
   CreateWorkFlowSchemaType,
 } from "@/schema/workflow";
 import { workflowStatus } from "@/types/workflow";
-import { redirect } from "next/navigation";
 
 export async function CreateWorkFlow(form: CreateWorkFlowSchemaType) {
   try {
@@ -36,8 +35,9 @@ export async function CreateWorkFlow(form: CreateWorkFlowSchemaType) {
       throw new Error("Failed to create workflow");
     }
 
-    redirect(`/workflow/editor/${workflow.id}`);
+    return { success: true, workflowId: workflow.id };
   } catch (error) {
+    console.error("Error creating workflow:", error);
     if (error instanceof Error) {
       throw new Error(`Error creating workflow: ${error.message}`);
     }

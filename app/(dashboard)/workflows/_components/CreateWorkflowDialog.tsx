@@ -27,20 +27,26 @@ import { useMutation } from "@tanstack/react-query";
 import { CreateWorkFlow } from "@/actions/workflows/createWorkFlow";
 import { toast } from "sonner";
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
+  const router = useRouter();
+
   const form = useForm<CreateWorkFlowSchemaType>({
     resolver: zodResolver(createWorkflowSchema),
     defaultValues: { name: "", description: "" },
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: CreateWorkFlow,
-    onSuccess: () => {
-      toast.success("Workflow created", { id: "create-workflow" });
-      form.reset();
+    onSuccess: (result) => {
+      if (result.success) {
+        toast.success("Workflow created", { id: "create-workflow" });
+        router.push(`/workflow/editor/${result.workflowId}`);
+      }
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Mutation Error: ", error);
       toast.error("Failed to create workflow", { id: "create-workflow" });
     },
   });
@@ -107,16 +113,31 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                     <FormDescription className="text-muted-foreground">
                       Provide a brief description of what your workflow does.
                       <br />
-                      This is optional but can help you remember the workflow&apos;s
-                      purpose
+                      This is optional but can help you remember the
+                      workflow&apos;s purpose
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isPending}>
-                {!isPending && "Proceed"}
-                {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isPending || isSuccess}
+              >
+                {!isPending && !isSuccess && "Proceed"}
+                {isPending && (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Creating workflow
+                  </>
+                )}
+                {isSuccess && (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Redirecting to editor
+                  </>
+                )}
               </Button>
             </form>
           </Form>

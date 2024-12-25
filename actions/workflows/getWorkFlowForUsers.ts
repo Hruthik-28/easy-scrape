@@ -16,9 +16,10 @@ export async function GetWorkFlowForUsers() {
       orderBy: { createdAt: "asc" },
     });
   } catch (error) {
+    console.error("Error fetching workflows:", error);
     if (error instanceof Error) {
-      throw new Error(`Failed to fetch workflows: ${error.message}`);
+      throw new Error(`Error fetching workflows: ${error.message}`);
     }
-    throw new Error("Failed to fetch workflows");
+    throw new Error("Error fetching workflows");
   }
 }
