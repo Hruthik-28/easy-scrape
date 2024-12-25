@@ -107,7 +107,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                     <FormDescription className="text-muted-foreground">
                       Provide a brief description of what your workflow does.
                       <br />
-                      This is optional but can help you remember the workflow's
+                      This is optional but can help you remember the workflow&apos;s
                       purpose
                     </FormDescription>
                     <FormMessage />

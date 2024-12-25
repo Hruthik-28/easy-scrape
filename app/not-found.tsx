@@ -14,7 +14,7 @@ function NotFound() {
       </div>
       <div className="flex flex-col space-y-4">
         <p className="text-muted-foreground">
-          Don't Worry. Sometimes even Good things gets lost.
+          Don&apos;t Worry. Sometimes even Good things gets lost.
         </p>
         <div className="flex justify-center items-center ">
           <Link href={"/"}>
