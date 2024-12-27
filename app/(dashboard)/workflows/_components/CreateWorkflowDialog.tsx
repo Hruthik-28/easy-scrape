@@ -86,7 +86,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                       </span>
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isPending} />
                     </FormControl>
                     <FormDescription>
                       Choose a descriptive and unique name
@@ -108,7 +108,11 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                       </span>
                     </FormLabel>
                     <FormControl>
-                      <Textarea {...field} className="resize-none" />
+                      <Textarea
+                        {...field}
+                        className="resize-none"
+                        disabled={isPending}
+                      />
                     </FormControl>
                     <FormDescription className="text-muted-foreground">
                       Provide a brief description of what your workflow does.

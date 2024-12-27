@@ -4,6 +4,7 @@ import { GetWorkFlowForUsers } from "@/actions/workflows/getWorkFlowForUsers";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, InboxIcon } from "lucide-react";
 import CreateWorkflowDialog from "./_components/CreateWorkflowDialog";
+import WorkflowCard from "@/app/(dashboard)/workflows/_components/WorkflowCard";
 
 function WorkflowsPage() {
   return (
@@ -67,7 +68,11 @@ async function UserWorkflows() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center gap-6"></div>
+    <div className="flex flex-col justify-center items-center gap-8">
+      {userWorkflows.map((workflow) => (
+        <WorkflowCard key={workflow.id} workflow={workflow} />
+      ))}
+    </div>
   );
 }
 
