@@ -18,7 +18,7 @@ function AppProviders({ children }: { children: React.ReactNode }) {
       >
         {children}
       </ThemeProvider>
-      <ReactQueryDevtools />
+      <ReactQueryDevtools/>
     </QueryClientProvider>
   );
 }
