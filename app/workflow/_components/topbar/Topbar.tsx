@@ -2,9 +2,7 @@
 
 import ToolTipWrapper from "@/components/ToolTipWrapper";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronLeftIcon, SaveIcon } from "lucide-react";
-import Link from "next/link";
+import { ChevronLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import SaveBtn from "./SaveBtn";
@@ -34,18 +32,6 @@ function Topbar({ title, workflowName, workflowId }: Props) {
           )}
         </div>
       </div>
-      {/* <div className="">
-        <Tabs defaultValue="editor" className="w-[400px]">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="editor" asChild>
-              <Link href={`/workflow/editor/${workflowId}`}>Editor</Link>
-            </TabsTrigger>
-            <TabsTrigger value="runs" asChild>
-              <Link href={`/workflow/runs/${workflowId}`}>Runs</Link>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div> */}
 
       <div className="flex gap-2 flex-1 justify-end">
         <SaveBtn workflowId={workflowId} />

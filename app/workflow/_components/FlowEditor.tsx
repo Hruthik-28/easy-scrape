@@ -38,7 +38,7 @@ function FlowEditor({ workflow }: { workflow: workflow }) {
     } catch (error) {
       console.log(error);
     }
-  }, [workflow.defination, setNodes, setEdges]);
+  }, [workflow.defination, setViewport, setNodes, setEdges]);
 
   return (
     <main className="h-full w-full">
