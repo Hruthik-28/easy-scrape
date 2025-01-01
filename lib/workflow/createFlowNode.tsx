@@ -2,7 +2,7 @@ import { AppNode } from "@/types/appNode";
 import { TaskType } from "@/types/task";
 
 export function CreateFlowNode(
-  nodeType: TaskType.LAUNCH_BROWSER,
+  nodeType: TaskType,
   position?: { x: number; y: number }
 ): AppNode {
   return {
