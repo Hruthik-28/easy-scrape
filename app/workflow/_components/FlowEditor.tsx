@@ -2,29 +2,41 @@
 
 import { workflow } from "@prisma/client";
 import {
+  addEdge,
   Background,
   BackgroundVariant,
+  Connection,
   Controls,
   ReactFlow,
   useEdgesState,
   useNodesState,
   useReactFlow,
 } from "@xyflow/react";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import NodeComponent from "./nodes/NodeComponent";
 import "@xyflow/react/dist/style.css";
+import { CreateFlowNode } from "@/lib/workflow/createFlowNode";
+import { TaskType } from "@/types/task";
+import { AppNode } from "@/types/appNode";
+import EdgeComponent from "./edges/EdgeComponent";
+import { CreateFlowEdge } from "@/lib/workflow/createFlowEdge";
+import { AppEdge } from "@/types/appEdge";
 
 const nodeTypes = {
   EasyScrapeNode: NodeComponent,
+};
+
+const edgeTypes = {
+  EasyScrapeEdge: EdgeComponent,
 };
 
 const snapGrid: [number, number] = [1, 1];
 const fitViewOptions = { padding: 1 };
 
 function FlowEditor({ workflow }: { workflow: workflow }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { setViewport } = useReactFlow();
+  const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
+  const { setViewport, screenToFlowPosition } = useReactFlow();
 
   useEffect(() => {
     try {
@@ -40,6 +52,30 @@ function FlowEditor({ workflow }: { workflow: workflow }) {
     }
   }, [workflow.defination, setViewport, setNodes, setEdges]);
 
+  const onDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    const taskType = e.dataTransfer.getData("application/reactflow");
+    if (typeof taskType === undefined || !taskType) return;
+
+    const position = screenToFlowPosition({ x: e.clientX, y: e.clientY });
+    const newNode = CreateFlowNode(taskType as TaskType, position);
+
+    setNodes((prevNodes) => prevNodes.concat(newNode));
+  }, []);
+
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      const newEdge = CreateFlowEdge(connection);
+      setEdges((edges) => addEdge(newEdge, edges));
+    },
+    [setEdges]
+  );
+
   return (
     <main className="h-full w-full">
       <ReactFlow
@@ -48,10 +84,15 @@ function FlowEditor({ workflow }: { workflow: workflow }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        onConnect={onConnect}
         fitViewOptions={fitViewOptions}
         snapGrid={snapGrid}
         snapToGrid
         // fitView
+        draggable
+        onDragOver={(e) => onDragOver(e)}
+        onDrop={(e) => onDrop(e)}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
         <Controls
