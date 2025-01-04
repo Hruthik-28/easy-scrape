@@ -2,7 +2,7 @@
 
 import { workflow } from "@prisma/client";
 import { Card, CardContent } from "../../../../components/ui/card";
-import { workflowStatus } from "@/types/workflow";
+import { WorkflowStatus } from "@/types/workflow";
 import { FileText, MoreVertical, Play, Shuffle, Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -21,12 +21,12 @@ import DeleteWorkflowDialog from "./DeleteWorkflowDialog";
 import { useState } from "react";
 
 const statusColors = {
-  [workflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
-  [workflowStatus.PUBLISHED]: "bg-primary",
+  [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
+  [WorkflowStatus.PUBLISHED]: "bg-primary",
 };
 
 function WorkflowCard({ workflow }: { workflow: workflow }) {
-  const isDraft = workflow.status === workflowStatus.DRAFT;
+  const isDraft = workflow.status === WorkflowStatus.DRAFT;
   const workflowEditorPath = `/workflow/editor/${workflow.id}`;
 
   return (
@@ -37,8 +37,8 @@ function WorkflowCard({ workflow }: { workflow: workflow }) {
             className={cn(
               "w-10 h-10 rounded-full flex items-center justify-center",
               isDraft
-                ? statusColors[workflowStatus.DRAFT]
-                : statusColors[workflowStatus.PUBLISHED]
+                ? statusColors[WorkflowStatus.DRAFT]
+                : statusColors[WorkflowStatus.PUBLISHED]
             )}
           >
             {isDraft ? (

@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { workflowStatus } from "@/types/workflow";
+import { WorkflowStatus } from "@/types/workflow";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -27,7 +27,7 @@ export async function updateWorkflow({
       throw new Error("No Workflow Found");
     }
 
-    if (workflow.status !== workflowStatus.DRAFT) {
+    if (workflow.status !== WorkflowStatus.DRAFT) {
       throw new Error("Workflow status is not draft");
     }
 

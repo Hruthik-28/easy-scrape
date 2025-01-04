@@ -6,7 +6,7 @@ import {
   createWorkflowSchema,
   CreateWorkFlowSchemaType,
 } from "@/schema/workflow";
-import { workflowStatus } from "@/types/workflow";
+import { WorkflowStatus } from "@/types/workflow";
 import { AppNode } from "@/types/appNode";
 import { Edge } from "@xyflow/react";
 import { CreateFlowNode } from "@/lib/workflow/createFlowNode";
@@ -38,7 +38,7 @@ export async function CreateWorkFlow(form: CreateWorkFlowSchemaType) {
     const workflow = await prisma.workflow.create({
       data: {
         userId,
-        status: workflowStatus.DRAFT,
+        status: WorkflowStatus.DRAFT,
         defination: JSON.stringify(initialFlow),
         ...data,
       },
