@@ -22,6 +22,7 @@ function TaskMenu() {
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-1 justify-center items-center">
             <TaskMenuButton taskType={TaskType.PAGE_TO_HTML} />
+            <TaskMenuButton taskType={TaskType.EXTRACT_TEXT_FROM_ELEMENT} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -44,7 +45,7 @@ function TaskMenuButton({ taskType }: { taskType: TaskType }) {
       onDragStart={(e) => onDragStart(e, task.type)}
     >
       <div className="flex items-center gap-2 justify-start">
-        {<task.icon size={16} />}
+        {<task.icon />}
         {task.label}
       </div>
       <CoinsIcon size={16} />
