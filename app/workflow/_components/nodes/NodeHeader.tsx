@@ -26,7 +26,8 @@ function NodeHeader({
     const node = getNode(nodeId) as AppNode;
     if (!node) return;
     const newX = node.position.x;
-    const newY = node.position.y + node.measured?.height + 20;
+    const nodeHt = node.measured?.height;
+    const newY = node.position.y + nodeHt! + 20;
     addNodes(CreateFlowNode(node.data.type, { x: newX, y: newY }));
   };
 
