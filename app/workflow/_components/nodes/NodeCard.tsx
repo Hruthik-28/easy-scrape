@@ -1,5 +1,6 @@
 "use client";
 
+import { useFlowValidationStore } from "@/components/store/FlowValidationStore";
 import { cn } from "@/lib/utils";
 import { useReactFlow } from "@xyflow/react";
 import React from "react";
@@ -14,6 +15,9 @@ function NodeCard({
   isSelected: boolean;
 }) {
   const { getNode, setCenter } = useReactFlow();
+  const invalidInputs = useFlowValidationStore((state) => state.invalidInputs);
+  const hasInvalidInputs = invalidInputs.some((node) => node.nodeId === nodeId);
+
   return (
     <div
       onDoubleClick={() => {
@@ -33,7 +37,8 @@ function NodeCard({
       }}
       className={cn(
         "rounded-md border-2 border-separate flex flex-col w-[420px] text-xs gap-1 bg-background",
-        isSelected && "border-primary"
+        isSelected && "border-primary",
+        hasInvalidInputs && "border-destructive/60 border-2"
       )}
     >
       {children}
