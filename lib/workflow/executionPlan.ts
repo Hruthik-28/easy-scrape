@@ -7,7 +7,6 @@ import {
   WorkflowExecutionPlanPhase,
 } from "@/types/workflow";
 import { TaskRegistry } from "./task/TaskRegistry";
-import { getIncomers } from "@xyflow/react";
 
 export function FlowToExecutionPlan(
   nodes: AppNode[],
@@ -62,12 +61,12 @@ export function FlowToExecutionPlan(
 
       if (invalidInputs.length > 0) {
         const incomers = getIncomers(currentNode, nodes, edges);
-
+        // console.log("@incomers", incomers)
         if (incomers.every((incomer) => planned.has(incomer.id))) {
           // If all incoming edges/incomers are planned and there are still invalid inputs
           // this means that the particular node has an invalid input
           // which means that the workflow is invalid
-          console.error("invalid inputs", currentNode.id, invalidInputs);
+          console.error("@invalid inputs", currentNode.id, invalidInputs);
           inputsWithErros.push({
             nodeId: currentNode.id,
             inputs: invalidInputs,
@@ -135,6 +134,7 @@ function getInvalidInputs(
     if (requiredInputProvidedByVisitedOutput) {
       // The input is required and we have a valid value for it
       // provided by a task i.e already planned
+      
       continue;
     } else if (!input.required) {
       // If an input is not required but there is an output linked to it
@@ -149,4 +149,24 @@ function getInvalidInputs(
     invalidInputs.push(input.name);
   }
   return invalidInputs;
+}
+
+function getIncomers(
+  node: AppNode,
+  nodes: AppNode[],
+  edges: AppEdge[]
+): AppNode[] {
+  if (!node.id) {
+    return [];
+  }
+
+  const incomerIds = new Set();
+
+  edges.forEach((edge) => {
+    if (edge.target === node.id) {
+      incomerIds.add(edge.source);
+    }
+  });
+
+  return nodes.filter((node) => incomerIds.has(node.id));
 }
