@@ -10,15 +10,16 @@ import ExecuteBtn from "./ExecuteBtn";
 
 interface Props {
   title: string;
-  workflowName?: string;
+  subTitle?: string;
   workflowId: string;
+  hideButtons?: boolean;
 }
 
-function Topbar({ title, workflowName, workflowId }: Props) {
+function Topbar({ title, subTitle, workflowId, hideButtons = false }: Props) {
   const router = useRouter();
   const navigateBack = () => router.back();
   return (
-    <header className="border-b-2 h-16 p-2 flex justify-between items-center top-0 bg-background z-10">
+    <header className="w-full border-b-2 h-16 p-2 flex justify-between items-center top-0 bg-background z-10">
       <div className="flex gap-2 flex-1 justify-start">
         <ToolTipWrapper content="Back">
           <Button size={"icon"} variant={"ghost"} onClick={navigateBack}>
@@ -28,15 +29,19 @@ function Topbar({ title, workflowName, workflowId }: Props) {
 
         <div className="flex flex-col gap-1">
           <p className="font-bold">{title}</p>
-          {workflowName && (
-            <p className="text-xs text-muted-foreground">{workflowName}</p>
+          {subTitle && (
+            <p className="text-xs text-muted-foreground">{subTitle}</p>
           )}
         </div>
       </div>
 
       <div className="flex gap-2 flex-1 justify-end">
-        <ExecuteBtn workflowId={workflowId} />
-        <SaveBtn workflowId={workflowId} />
+        {hideButtons === false && (
+          <>
+            <ExecuteBtn workflowId={workflowId} />
+            <SaveBtn workflowId={workflowId} />
+          </>
+        )}
       </div>
     </header>
   );
