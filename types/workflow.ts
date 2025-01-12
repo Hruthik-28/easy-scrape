@@ -1,6 +1,14 @@
 import { LucideProps } from "lucide-react";
 import { TaskParam, TaskType } from "./task";
 import { AppNode, AppNodeMissingInputs } from "./appNode";
+import { AppEdge } from "./appEdge";
+import { Viewport } from "@xyflow/react";
+
+export interface Workflow {
+  nodes: AppNode[];
+  edges: AppEdge[];
+  viewport: Viewport;
+}
 
 export enum WorkflowStatus {
   DRAFT = "DRAFT",
@@ -25,8 +33,8 @@ export type WorkflowExecutionPlanPhase = {
 export type WorkflowExecutionPlan = WorkflowExecutionPlanPhase[];
 
 export enum FlowToExecutionPlanValidationError {
-  "NO_ENTRY_POINT",
-  "INVALID_INPUTS",
+  NO_ENTRY_POINT = "NO_ENTRY_POINT",
+  INVALID_INPUTS = "INVALID_INPUTS",
 }
 
 export type FlowToExecutionPlanType = {
@@ -38,3 +46,21 @@ export type FlowToExecutionPlanError = {
   type: FlowToExecutionPlanValidationError;
   inValidElements?: AppNodeMissingInputs[];
 };
+
+export enum WorkflowExecutionStatus {
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+export enum ExecutionPhaseStatus {
+  CREATED = "CREATED",
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
+export enum WorkflowExecutionTrigger{
+  MANUAL = "MANUAL"
+}
