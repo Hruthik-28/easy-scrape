@@ -13,18 +13,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model workflow {
+model Workflow {
   id          String  @id @default(cuid())
   userId      String
   name        String
   description String?
 
   defination String
-  status     String
+  status     String // DRAFT | PUBLISHED
+
+  lastRunAt     DateTime?
+  lastRunId     String?
+  lastRunStatus String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  executions WorkflowExecution[]
+
   // user cant have two workflows with the same name 
   @@unique([name, userId])
+}
+
+model WorkflowExecution {
+  id         String @id @default(cuid())
+  workflowId String
+  userId     String
+  trigger    String
+  status     String
+
+  createdAt   DateTime  @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  creditsConsumed Int @default(0)
+
+  phases ExecutionPhase[]
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+}
+
+model ExecutionPhase {
+  id          String    @id @default(cuid())
+  userId      String
+  status      String
+  number      Int
+  node        String
+  name        String
+  inputs      String?
+  outputs     String?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  creditsConsumed     Int?
+  workflowExecutionId String
+
+  execution WorkflowExecution @relation(fields: [workflowExecutionId], references: [id], onDelete: Cascade)
 }

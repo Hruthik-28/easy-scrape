@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Workflow" ALTER COLUMN "lastRunId" SET DATA TYPE TEXT,
+ALTER COLUMN "lastRunStatus" SET DATA TYPE TEXT;
