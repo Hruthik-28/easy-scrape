@@ -11,8 +11,10 @@ import {
 
 const useExecutionPlan = () => {
   const { toObject } = useReactFlow();
-  const setInvalidInputs = useFlowValidationStore.getState().setInvalidInputs;
-  const clearErrors = useFlowValidationStore.getState().clearErrors;
+  const setInvalidInputs = useFlowValidationStore(
+    (state) => state.setInvalidInputs
+  );
+  const clearErrors = useFlowValidationStore((state) => state.clearErrors);
 
   const handleErrors = useCallback(
     (error: FlowToExecutionPlanError) => {
