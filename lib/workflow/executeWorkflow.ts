@@ -1,13 +1,13 @@
-import "server-only"; // This import make sures that this Fn can be used only on server side
+import "server-only"; // makes this Function unusable in client components
 import prisma from "../prisma";
 import {
   ExecutionPhaseStatus,
   WorkflowExecutionStatus,
 } from "@/types/workflow";
 import { ExecutionPhase, Workflow, WorkflowExecution } from "@prisma/client";
+import { waitFor } from "../helpers/waitFor";
 import { AppNode } from "@/types/appNode";
 import { TaskRegistry } from "./task/TaskRegistry";
-import { waitFor } from "../helpers/waitFor";
 
 export async function ExecuteWorkflow(executionId: string) {
   const execution = await prisma.workflowExecution.findUnique({
@@ -19,66 +19,65 @@ export async function ExecuteWorkflow(executionId: string) {
   });
 
   if (!execution) {
-    console.error(`Execution with ID ${executionId} not found.`);
-    throw new Error("Execution not found");
+    throw new Error(`No worfklow execution found for Id: ${executionId}`);
   }
 
-  const environment = { phases: {} };
+  // const environment = { phases: {} };
 
   await initializeWorkflowExecution(execution.id, execution.workflowId);
-
   await initializePhasesStatuses(execution);
 
-  let creditsConsumed = 0;
   let executionFailed = false;
+  let creditsConsumed = 0;
   for (const phase of execution.phases) {
+    // await waitFor(2000);
     const phaseExecution = await executeWorkflowPhase(phase);
     if (!phaseExecution.success) {
       executionFailed = true;
       break;
     }
+    creditsConsumed += 1; // dummy credits consume (remove later)
   }
 
-  // finialize execution
   await finalizeWorkflowExecution(
     executionId,
     execution.workflowId,
-    executionFailed,
-    creditsConsumed
+    creditsConsumed,
+    executionFailed
   );
-  // TODO: clean up environment
+
+  // TODO: clean up the environment
 }
 
 async function initializeWorkflowExecution(
   executionId: string,
   workflowId: string
 ) {
-  const updatedExecution = await prisma.workflowExecution.update({
+  await prisma.workflowExecution.update({
     where: { id: executionId },
     data: {
       startedAt: new Date(),
       status: WorkflowExecutionStatus.RUNNING,
     },
   });
-  const updatedWorkflow = await prisma.workflow.update({
+
+  await prisma.workflow.update({
     where: { id: workflowId },
     data: {
       lastRunAt: new Date(),
-      lastRunId: updatedExecution.id,
+      lastRunId: executionId,
       lastRunStatus: WorkflowExecutionStatus.RUNNING,
     },
   });
-
-  console.log(updatedWorkflow);
 }
 
-type WorkflowExecutionWithWorkflowAndPhases = WorkflowExecution & {
+type ExecutionWithWorkflowAndPhases = WorkflowExecution & {
   workflow: Workflow;
   phases: ExecutionPhase[];
 };
 
 async function initializePhasesStatuses(
-  execution: WorkflowExecutionWithWorkflowAndPhases
+  execution: ExecutionWithWorkflowAndPhases
 ) {
   await prisma.executionPhase.updateMany({
     where: {
@@ -95,8 +94,8 @@ async function initializePhasesStatuses(
 async function finalizeWorkflowExecution(
   executionId: string,
   workflowId: string,
-  executionFailed: boolean,
-  creditsConsumed: number
+  creditsConsumed: number,
+  executionFailed: boolean
 ) {
   const finalStatus = executionFailed
     ? WorkflowExecutionStatus.FAILED
@@ -106,8 +105,8 @@ async function finalizeWorkflowExecution(
     where: { id: executionId },
     data: {
       status: finalStatus,
-      completedAt: new Date(),
       creditsConsumed,
+      completedAt: new Date(),
     },
   });
 
@@ -121,10 +120,11 @@ async function finalizeWorkflowExecution(
         lastRunStatus: finalStatus,
       },
     })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((err) => {
       // ignore
-      // this means that we have triggered other runs for this workflow
-      // while an execution was running
+      // this means we have triggered other runs of this workflows
+      // while and execution was running
     });
 }
 
@@ -142,22 +142,18 @@ async function executeWorkflowPhase(phase: ExecutionPhase) {
   });
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
-  console.log(
-    `Executing phase ${phase.name} with ${creditsRequired}credits required`
-  );
+  console.log(`Executing phase ${phase.name} with credits ${creditsRequired}`);
 
-  // TODO: decrement userBalance credits with credit consumed
+  // TODO: decrement user balance with required credits
 
-  // Execute phase simulation
   await waitFor(3000);
-  const success = Math.random() < 0.9;
+  const success = true;
 
-  await finializePhase(phase.id, success);
+  await finalizeExecutionPhase(phase.id, success);
 
   return { success };
 }
-
-async function finializePhase(phaseId: string, success: boolean) {
+async function finalizeExecutionPhase(phaseId: string, success: boolean) {
   const finalStatus = success
     ? ExecutionPhaseStatus.COMPLETED
     : ExecutionPhaseStatus.FAILED;
