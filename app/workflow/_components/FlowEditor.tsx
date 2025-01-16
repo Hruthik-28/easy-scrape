@@ -1,6 +1,6 @@
 "use client";
 
-import { workflow } from "@prisma/client";
+import { Workflow } from "@prisma/client";
 import {
   addEdge,
   Background,
@@ -36,7 +36,7 @@ const edgeTypes = {
 const snapGrid: [number, number] = [1, 1];
 const fitViewOptions = { padding: 1 };
 
-function FlowEditor({ workflow }: { workflow: workflow }) {
+function FlowEditor({ workflow }: { workflow: Workflow }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
   const {

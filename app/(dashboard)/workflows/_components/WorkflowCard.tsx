@@ -1,6 +1,6 @@
 "use client";
 
-import { workflow } from "@prisma/client";
+import { Workflow } from "@prisma/client";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { WorkflowStatus } from "@/types/workflow";
 import { FileText, MoreVertical, Play, Shuffle, Trash } from "lucide-react";
@@ -25,7 +25,7 @@ const statusColors = {
   [WorkflowStatus.PUBLISHED]: "bg-primary",
 };
 
-function WorkflowCard({ workflow }: { workflow: workflow }) {
+function WorkflowCard({ workflow }: { workflow: Workflow }) {
   const isDraft = workflow.status === WorkflowStatus.DRAFT;
   const workflowEditorPath = `/workflow/editor/${workflow.id}`;
 
