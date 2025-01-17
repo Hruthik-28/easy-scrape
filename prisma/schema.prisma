@@ -46,6 +46,8 @@ model WorkflowExecution {
   startedAt   DateTime?
   completedAt DateTime?
 
+  defination String
+
   creditsConsumed Int @default(0)
 
   phases ExecutionPhase[]
