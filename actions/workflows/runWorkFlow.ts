@@ -89,7 +89,7 @@ export async function RunWorkflow({
     throw new Error("Failed to create WorkflowExecution");
   }
 
-  await ExecuteWorkflow(workflowExecution.id); // run this on background
+  ExecuteWorkflow(workflowExecution.id); // run this on background
 
   revalidatePath("/workflow/runs");
 

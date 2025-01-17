@@ -11,14 +11,16 @@ export async function LaunchBrowserExecutor(
   try {
     const websiteUrl = environment.getInput("Website Url");
 
+    const executablePath =
+      process.env.CHROME_EXECUTABLE_PATH_LOCAL ||
+      (await chromium.executablePath(
+        process.env.CHROME_EXECUTABLE_PATH_PODUCTION
+      ));
+
     const browser = await puppeteer.launch({
       args: isLocal ? puppeteer.defaultArgs() : chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: isLocal
-        ? process.env.CHROME_EXECUTABLE_PATH_LOCAL
-        : await chromium.executablePath(
-            process.env.CHROME_EXECUTABLE_PATH_PODUCTION
-          ),
+      executablePath,
       headless: chromium.headless,
     });
 
