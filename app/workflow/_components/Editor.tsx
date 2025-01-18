@@ -14,6 +14,7 @@ function Editor({ workflow }: { workflow: Workflow }) {
             title="Workflow editor"
             subTitle={workflow.name}
             workflowId={workflow.id}
+            tabState="editor"
           />
           <section className="flex h-full overflow-hidden">
             <TaskMenu />

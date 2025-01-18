@@ -18,6 +18,7 @@ export default async function Page({
         title="Workflow run details"
         subTitle={`Run ID: ${executionId}`}
         hideButtons={true}
+        tabState="runs"
       />
       <section className="flex h-full overflow-auto">
         <Suspense
@@ -45,5 +46,5 @@ async function ExecutionViewerWrapper({
     return <div>NO Workflow executions found</div>;
   }
 
-  return <ExecutionViewer initialData={workflowExecution}/>
+  return <ExecutionViewer initialData={workflowExecution} />;
 }
