@@ -18,10 +18,13 @@ export async function LaunchBrowserExecutor(
       ));
 
     const browser = await puppeteer.launch({
-      args: isLocal ? puppeteer.defaultArgs() : chromium.args,
+      args: isLocal
+        ? puppeteer.defaultArgs()
+        : [...chromium.args, "--no-sandbox"],
       defaultViewport: chromium.defaultViewport,
       executablePath,
       headless: chromium.headless,
+      timeout: 30000, // 30s
     });
 
     environment.setBrowser(browser);
