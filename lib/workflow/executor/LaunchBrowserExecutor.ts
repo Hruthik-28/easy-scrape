@@ -25,13 +25,17 @@ export async function LaunchBrowserExecutor(
     });
 
     environment.setBrowser(browser);
+    environment.log.info("Browser started successfully");
+
     const newPage = await browser.newPage();
     await newPage.goto(websiteUrl);
     environment.setPage(newPage);
 
+    environment.log.info(`Opened page at: ${websiteUrl}`);
+
     return true;
-  } catch (error) {
-    console.error("Error while running LaunchBrowserExecutor", error);
+  } catch (error: any) {
+    environment.log.error(error.message);
     return false;
   }
 }
